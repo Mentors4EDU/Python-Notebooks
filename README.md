@@ -5,5 +5,5 @@
 </p>
 
 <p align="center">
-This is a repository for some past practice IPython notebooks, projects, portfolio work and assignments
+This is a repo for some past practice IPython notebooks, projects, portfolio work and assignments
 </p>
