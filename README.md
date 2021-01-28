@@ -20,3 +20,9 @@ import pandas as pd
 df  = pd.read_csv("Directory/File.csv")
 print(df)
 ```
+
+**Import an Image:**
+```python
+from IPython.display import Image
+Image(filename='/home/user/directory/imagename.png')
+```
