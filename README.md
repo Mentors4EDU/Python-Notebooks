@@ -7,3 +7,16 @@
 <p align="center">
 This is a repo for some past practice IPython notebooks, projects, portfolio work and assignments
 </p>
+
+# Commands:
+
+**Import:**
+```python
+import pandas as pd
+```
+
+**Reading a CSV:**
+```python
+df  = pd.read_csv("Directory/File.csv")
+print(df)
+```
