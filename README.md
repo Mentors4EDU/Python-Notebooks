@@ -18,6 +18,9 @@ import pandas as pd
 **Reading a CSV:**
 ```python
 df  = pd.read_csv("Directory/File.csv")
+```
+**Printing:** 
+```python 
 print(df)
 ```
 
