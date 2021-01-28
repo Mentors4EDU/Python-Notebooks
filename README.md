@@ -31,6 +31,11 @@ Image(filename='/home/user/directory/imagename.png')
 ```
 
 **Yes/No Columns:**
-```Python
+```python
 filename_df['EXAMPLE'] = [1 if e == 'Yes' else 0 for e in filename_df['EXAMPLE']]
+```
+**Data Frames:**
+```python
+df = pd.DataFrame([(.2, .3), (.0, .6), (.6, .0), (.2, .1)],
+columns=['yes', 'no'])
 ```
