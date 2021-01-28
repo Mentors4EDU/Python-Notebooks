@@ -55,3 +55,7 @@ plt.rc("font", size=8)
 sns.set(style="white")
 sns.set(style="whitegrid", color_codes=True)
 ```
+**Data Unique:**
+```python
+data['Category'].unique
+```
