@@ -46,3 +46,12 @@ df_Example = pd.get_dummies(df['Example'])
 df_concat = pd.concat([df, df_Category, df_Example], axis=1)
 print (df_concat.head())
 ```
+**Set Font**
+```python
+plt.rc("font", size=8)
+```
+**Set Style:**
+```python
+sns.set(style="white")
+sns.set(style="whitegrid", color_codes=True)
+```
