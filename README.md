@@ -39,3 +39,10 @@ filename_df['EXAMPLE'] = [1 if e == 'Yes' else 0 for e in filename_df['EXAMPLE']
 df = pd.DataFrame([(.2, .3), (.0, .6), (.6, .0), (.2, .1)],
 columns=['yes', 'no'])
 ```
+**Categories w/ Print:**
+```python
+df_Category = pd.get_dummies(df['Category'])
+df_Example = pd.get_dummies(df['Example'])
+df_concat = pd.concat([df, df_Category, df_Example], axis=1)
+print (df_concat.head())
+```
