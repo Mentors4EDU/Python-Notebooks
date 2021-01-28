@@ -8,7 +8,7 @@
 This is a repo for some past practice IPython notebooks, projects, portfolio work and assignments
 </p>
 
-# Commands:
+### Commands:
 
 **Import:**
 ```python
