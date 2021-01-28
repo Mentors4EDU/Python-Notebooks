@@ -59,7 +59,7 @@ sns.set(style="whitegrid", color_codes=True)
 ```python
 data['Category'].unique
 ```
-**X/Y Predict"**
+**X/Y Predict**
 ```python
 y_true = [df]
 y_pred = [df.unique]
