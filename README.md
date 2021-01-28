@@ -29,3 +29,8 @@ print(df)
 from IPython.display import Image
 Image(filename='/home/user/directory/imagename.png')
 ```
+
+**Yes/No Columns:**
+```Python
+filename_df['EXAMPLE'] = [1 if e == 'Yes' else 0 for e in filename_df['EXAMPLE']]
+```
