@@ -111,3 +111,10 @@ print ('Sum of values, grouped by sample2: ' + str(groupby_mean2))
 ```python
 data= d['Example']
 ```
+**Plot Labels:**
+```python
+plt.xlabel('Label1')
+plt.ylabel('Label2')
+plt.title('TitleExample')
+plt.show()
+```
