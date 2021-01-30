@@ -97,8 +97,8 @@ def calculate_mean(n):
     return mean
 print(mean)
 ```
-**Group by Mean:**
-*Source: https://datatofish.com/use-pandas-to-calculate-stats-from-an-imported-csv-file/**
+**Group by Mean:** \
+*Source: https://datatofish.com/use-pandas-to-calculate-stats-from-an-imported-csv-file/* \
 ```python
 groupby_mean1 = df.groupby(['Sample1']).mean() 
 groupby_count1 = df.groupby(['Sample1']).count()
