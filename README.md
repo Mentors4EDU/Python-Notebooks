@@ -88,3 +88,12 @@ df = pd.DataFrame(data=d)
 df.dtypes
 dtype: object
 ```
+**Calculate Mean:**
+```python
+def calculate_mean(n):
+    s = sum("example")
+    N = len(n)
+    mean = s / N
+    return mean
+print(mean)
+```
