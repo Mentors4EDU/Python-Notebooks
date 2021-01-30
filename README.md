@@ -70,7 +70,7 @@ confusion_matrix(y_true, y_pred)
 confusion_matrix(y_true, y_pred)
 ```
 **Density Plot:**
-```
+```python
 df.plot()
 df.plot(kind='density')
 ```
