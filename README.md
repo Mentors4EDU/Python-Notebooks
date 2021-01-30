@@ -97,3 +97,13 @@ def calculate_mean(n):
     return mean
 print(mean)
 ```
+**Group by Mean:**
+*Source: https://datatofish.com/use-pandas-to-calculate-stats-from-an-imported-csv-file/**
+```python
+groupby_mean1 = df.groupby(['Sample1']).mean() 
+groupby_count1 = df.groupby(['Sample1']).count()
+groupby_mean2 = df.groupby(['Sample2']).mean() 
+groupby_count2 = df.groupby(['Sample2']).count()
+print ('Sum of values, grouped by sample1: ' + str(groupby_mean1))
+print ('Sum of values, grouped by sample2: ' + str(groupby_mean2))
+```
