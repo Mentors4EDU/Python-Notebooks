@@ -107,3 +107,7 @@ groupby_count2 = df.groupby(['Sample2']).count()
 print ('Sum of values, grouped by sample1: ' + str(groupby_mean1))
 print ('Sum of values, grouped by sample2: ' + str(groupby_mean2))
 ```
+**Data:**
+```python
+data= d['Example']
+```
