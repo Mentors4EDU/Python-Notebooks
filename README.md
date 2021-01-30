@@ -69,3 +69,8 @@ confusion_matrix(y_true, y_pred)
 ```python
 confusion_matrix(y_true, y_pred)
 ```
+**Density Plot:**
+```
+df.plot()
+df.plot(kind='density')
+```
