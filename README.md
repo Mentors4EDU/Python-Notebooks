@@ -111,6 +111,10 @@ print ('Sum of values, grouped by sample2: ' + str(groupby_mean2))
 ```python
 data= d['Example']
 ```
+**Scatter Plots:**
+```python
+plt.scatter(data, example, edgecolors='r')
+```
 **Plot Labels:**
 ```python
 plt.xlabel('Label1')
