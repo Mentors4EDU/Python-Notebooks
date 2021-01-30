@@ -74,10 +74,17 @@ confusion_matrix(y_true, y_pred)
 df.plot()
 df.plot(kind='density')
 ```
-**Search Missing Values**
+**Search Missing Values:**
 ```python
 df = pd.read_csv('Downloads/ExampleFile.csv', dtype=str)
 missing_values = ["n/a", "na", "--"]
 df = pd.read_csv("Downloads/ExampleFile.csv", na_values = missing_values)
 print(df['Example'])
+```
+**Data Type Object:**
+```python
+d = {'col1': [1, 2], 'col2': [3, 4]}
+df = pd.DataFrame(data=d)
+df.dtypes
+dtype: object
 ```
