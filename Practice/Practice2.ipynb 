@@ -1,0 +1,1560 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 82,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'pandas.core.frame.DataFrame'>\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn.model_selection import train_test_split\n",
+    "from sklearn.neighbors import KNeighborsClassifier\n",
+    "from numpy.random import permutation\n",
+    "from scipy.spatial import distance\n",
+    "import matplotlib.pyplot as plt\n",
+    "from sklearn import datasets\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import random\n",
+    "import os\n",
+    "data  = pd.read_csv(\"Downloads/UniversalBank.csv\")\n",
+    "print(type(data))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Age</th>\n",
+       "      <th>Experience</th>\n",
+       "      <th>Income</th>\n",
+       "      <th>Family</th>\n",
+       "      <th>CCAvg</th>\n",
+       "      <th>Education</th>\n",
+       "      <th>Mortgage</th>\n",
+       "      <th>Personal Loan</th>\n",
+       "      <th>Securities Account</th>\n",
+       "      <th>CD Account</th>\n",
+       "      <th>Online</th>\n",
+       "      <th>CreditCard</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>25</td>\n",
+       "      <td>1</td>\n",
+       "      <td>49</td>\n",
+       "      <td>4</td>\n",
+       "      <td>1.6</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>45</td>\n",
+       "      <td>19</td>\n",
+       "      <td>34</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1.5</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>39</td>\n",
+       "      <td>15</td>\n",
+       "      <td>11</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>35</td>\n",
+       "      <td>9</td>\n",
+       "      <td>100</td>\n",
+       "      <td>1</td>\n",
+       "      <td>2.7</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>35</td>\n",
+       "      <td>8</td>\n",
+       "      <td>45</td>\n",
+       "      <td>4</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4995</th>\n",
+       "      <td>29</td>\n",
+       "      <td>3</td>\n",
+       "      <td>40</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1.9</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4996</th>\n",
+       "      <td>30</td>\n",
+       "      <td>4</td>\n",
+       "      <td>15</td>\n",
+       "      <td>4</td>\n",
+       "      <td>0.4</td>\n",
+       "      <td>1</td>\n",
+       "      <td>85</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4997</th>\n",
+       "      <td>63</td>\n",
+       "      <td>39</td>\n",
+       "      <td>24</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0.3</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4998</th>\n",
+       "      <td>65</td>\n",
+       "      <td>40</td>\n",
+       "      <td>49</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0.5</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4999</th>\n",
+       "      <td>28</td>\n",
+       "      <td>4</td>\n",
+       "      <td>83</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0.8</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5000 rows × 12 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      Age  Experience  Income  Family  CCAvg  Education  Mortgage  \\\n",
+       "0      25           1      49       4    1.6          1         0   \n",
+       "1      45          19      34       3    1.5          1         0   \n",
+       "2      39          15      11       1    1.0          1         0   \n",
+       "3      35           9     100       1    2.7          2         0   \n",
+       "4      35           8      45       4    1.0          2         0   \n",
+       "...   ...         ...     ...     ...    ...        ...       ...   \n",
+       "4995   29           3      40       1    1.9          3         0   \n",
+       "4996   30           4      15       4    0.4          1        85   \n",
+       "4997   63          39      24       2    0.3          3         0   \n",
+       "4998   65          40      49       3    0.5          2         0   \n",
+       "4999   28           4      83       3    0.8          1         0   \n",
+       "\n",
+       "      Personal Loan  Securities Account  CD Account  Online  CreditCard  \n",
+       "0                 0                   1           0       0           0  \n",
+       "1                 0                   1           0       0           0  \n",
+       "2                 0                   0           0       0           0  \n",
+       "3                 0                   0           0       0           0  \n",
+       "4                 0                   0           0       0           1  \n",
+       "...             ...                 ...         ...     ...         ...  \n",
+       "4995              0                   0           0       1           0  \n",
+       "4996              0                   0           0       1           0  \n",
+       "4997              0                   0           0       0           0  \n",
+       "4998              0                   0           0       1           0  \n",
+       "4999              0                   0           0       1           1  \n",
+       "\n",
+       "[5000 rows x 12 columns]"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X = data.iloc[:, :-1].values\n",
+    "y = data.iloc[:, 4].values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dataset = data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "0       25\n",
+      "1       45\n",
+      "2       39\n",
+      "3       35\n",
+      "4       35\n",
+      "        ..\n",
+      "4995    29\n",
+      "4996    30\n",
+      "4997    63\n",
+      "4998    65\n",
+      "4999    28\n",
+      "Name: Age, Length: 5000, dtype: int64\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(dataset.Age)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "0     49\n",
+      "1     34\n",
+      "2     11\n",
+      "3    100\n",
+      "4     45\n",
+      "Name: Income, dtype: int64\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(dataset.Income[0:5])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(5000, 12)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(dataset.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 54,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X_train, X_test, y_train, y_test = \\\n",
+    "    train_test_split(X, y, test_size=0.60, random_state=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "knn = KNeighborsClassifier(n_neighbors=5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "num = 10\n",
+    "converted_num = str(num) "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 67,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "KNeighborsClassifier()\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(knn)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 76,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "['Age' 'Experience' 'Income' 'Family' 'CCAvg' 'Education' 'Mortgage'\n",
+      " 'Personal Loan' 'Securities Account' 'CD Account' 'Online' 'CreditCard']\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(data.columns.values)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 81,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "distance_columns = ['Age', 'Experience', 'Income', 'Family', 'CCAvg', 'Education', 'Mortgage', 'Personal Loan', 'Securities Account', 'CD Account', 'Online', 'CreditCard']\n",
+    "data_numeric = data[distance_columns]\n",
+    "data_normalized = (data_numeric - data_numeric.mean()) / data_numeric.std()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 83,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data_normalized.fillna(0, inplace=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 86,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Age_normalized = data_normalized[data[\"Age\"] == \"Age\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 96,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from numpy.random import permutation\n",
+    "random_indices = permutation(data.index)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 97,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Sources:\n",
+    "# https://stackoverflow.com/questions/43211239/valueerror-unknown-label-type-continuous\n",
+    "# https://stackoverflow.com/questions/36869550/call-predict-function-for-nearest-neighbor-knn-classifier-with-python-scikit-s\n",
+    "# https://www.geeksforgeeks.org/convert-integer-to-string-in-python/\n",
+    "# https://www.datacamp.com/community/tutorials/k-nearest-neighbor-classification-scikit-learn\n",
+    "# https://www.dataquest.io/blog/k-nearest-neighbors-in-python/\n",
+    "# https://stackoverflow.com/questions/42191717/scikit-learn-random-state-in-splitting-dataset\n",
+    "# https://codekarim.com/node/32"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 98,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Index(['ID', 'Age', 'Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg',\n",
+       "       'Education', 'Mortgage', 'Personal Loan', 'Securities Account',\n",
+       "       'CD Account', 'Online', 'CreditCard'],\n",
+       "      dtype='object')"
+      ]
+     },
+     "execution_count": 98,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.columns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 99,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Age</th>\n",
+       "      <th>Experience</th>\n",
+       "      <th>Income</th>\n",
+       "      <th>Family</th>\n",
+       "      <th>CCAvg</th>\n",
+       "      <th>Education</th>\n",
+       "      <th>Mortgage</th>\n",
+       "      <th>Personal Loan</th>\n",
+       "      <th>Securities Account</th>\n",
+       "      <th>CD Account</th>\n",
+       "      <th>Online</th>\n",
+       "      <th>CreditCard</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>25</td>\n",
+       "      <td>1</td>\n",
+       "      <td>49</td>\n",
+       "      <td>4</td>\n",
+       "      <td>1.6</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>45</td>\n",
+       "      <td>19</td>\n",
+       "      <td>34</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1.5</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>39</td>\n",
+       "      <td>15</td>\n",
+       "      <td>11</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>35</td>\n",
+       "      <td>9</td>\n",
+       "      <td>100</td>\n",
+       "      <td>1</td>\n",
+       "      <td>2.7</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>35</td>\n",
+       "      <td>8</td>\n",
+       "      <td>45</td>\n",
+       "      <td>4</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4995</th>\n",
+       "      <td>29</td>\n",
+       "      <td>3</td>\n",
+       "      <td>40</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1.9</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4996</th>\n",
+       "      <td>30</td>\n",
+       "      <td>4</td>\n",
+       "      <td>15</td>\n",
+       "      <td>4</td>\n",
+       "      <td>0.4</td>\n",
+       "      <td>1</td>\n",
+       "      <td>85</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4997</th>\n",
+       "      <td>63</td>\n",
+       "      <td>39</td>\n",
+       "      <td>24</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0.3</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4998</th>\n",
+       "      <td>65</td>\n",
+       "      <td>40</td>\n",
+       "      <td>49</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0.5</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4999</th>\n",
+       "      <td>28</td>\n",
+       "      <td>4</td>\n",
+       "      <td>83</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0.8</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>1</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5000 rows × 12 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      Age  Experience  Income  Family  CCAvg  Education  Mortgage  \\\n",
+       "0      25           1      49       4    1.6          1         0   \n",
+       "1      45          19      34       3    1.5          1         0   \n",
+       "2      39          15      11       1    1.0          1         0   \n",
+       "3      35           9     100       1    2.7          2         0   \n",
+       "4      35           8      45       4    1.0          2         0   \n",
+       "...   ...         ...     ...     ...    ...        ...       ...   \n",
+       "4995   29           3      40       1    1.9          3         0   \n",
+       "4996   30           4      15       4    0.4          1        85   \n",
+       "4997   63          39      24       2    0.3          3         0   \n",
+       "4998   65          40      49       3    0.5          2         0   \n",
+       "4999   28           4      83       3    0.8          1         0   \n",
+       "\n",
+       "      Personal Loan  Securities Account  CD Account  Online  CreditCard  \n",
+       "0                 0                   1           0       0           0  \n",
+       "1                 0                   1           0       0           0  \n",
+       "2                 0                   0           0       0           0  \n",
+       "3                 0                   0           0       0           0  \n",
+       "4                 0                   0           0       0           1  \n",
+       "...             ...                 ...         ...     ...         ...  \n",
+       "4995              0                   0           0       1           0  \n",
+       "4996              0                   0           0       1           0  \n",
+       "4997              0                   0           0       0           0  \n",
+       "4998              0                   0           0       1           0  \n",
+       "4999              0                   0           0       1           1  \n",
+       "\n",
+       "[5000 rows x 12 columns]"
+      ]
+     },
+     "execution_count": 99,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.drop(['ID', 'ZIP Code'], axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 100,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Source: https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.drop.html"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 101,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[1.0000e+00, 4.9000e+01, 9.1107e+04, 4.0000e+00, 1.6000e+00,\n",
+       "        1.0000e+00, 0.0000e+00, 0.0000e+00, 1.0000e+00, 0.0000e+00,\n",
+       "        0.0000e+00, 0.0000e+00],\n",
+       "       [1.9000e+01, 3.4000e+01, 9.0089e+04, 3.0000e+00, 1.5000e+00,\n",
+       "        1.0000e+00, 0.0000e+00, 0.0000e+00, 1.0000e+00, 0.0000e+00,\n",
+       "        0.0000e+00, 0.0000e+00],\n",
+       "       [1.5000e+01, 1.1000e+01, 9.4720e+04, 1.0000e+00, 1.0000e+00,\n",
+       "        1.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00,\n",
+       "        0.0000e+00, 0.0000e+00],\n",
+       "       [9.0000e+00, 1.0000e+02, 9.4112e+04, 1.0000e+00, 2.7000e+00,\n",
+       "        2.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00,\n",
+       "        0.0000e+00, 0.0000e+00],\n",
+       "       [8.0000e+00, 4.5000e+01, 9.1330e+04, 4.0000e+00, 1.0000e+00,\n",
+       "        2.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00,\n",
+       "        0.0000e+00, 1.0000e+00]])"
+      ]
+     },
+     "execution_count": 101,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X = df[['Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg', 'Education', 'Mortgage', 'Personal Loan', 'Securities Account', 'CD Account', 'Online', 'CreditCard']] .values  #.astype(float)\n",
+    "X[0:5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 104,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[1.0000e+00, 2.5000e+01, 1.0000e+00, 4.9000e+01, 9.1107e+04,\n",
+       "        4.0000e+00, 1.6000e+00, 1.0000e+00, 0.0000e+00, 0.0000e+00,\n",
+       "        1.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00],\n",
+       "       [2.0000e+00, 4.5000e+01, 1.9000e+01, 3.4000e+01, 9.0089e+04,\n",
+       "        3.0000e+00, 1.5000e+00, 1.0000e+00, 0.0000e+00, 0.0000e+00,\n",
+       "        1.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00],\n",
+       "       [3.0000e+00, 3.9000e+01, 1.5000e+01, 1.1000e+01, 9.4720e+04,\n",
+       "        1.0000e+00, 1.0000e+00, 1.0000e+00, 0.0000e+00, 0.0000e+00,\n",
+       "        0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00],\n",
+       "       [4.0000e+00, 3.5000e+01, 9.0000e+00, 1.0000e+02, 9.4112e+04,\n",
+       "        1.0000e+00, 2.7000e+00, 2.0000e+00, 0.0000e+00, 0.0000e+00,\n",
+       "        0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00],\n",
+       "       [5.0000e+00, 3.5000e+01, 8.0000e+00, 4.5000e+01, 9.1330e+04,\n",
+       "        4.0000e+00, 1.0000e+00, 2.0000e+00, 0.0000e+00, 0.0000e+00,\n",
+       "        0.0000e+00, 0.0000e+00, 0.0000e+00, 1.0000e+00]])"
+      ]
+     },
+     "execution_count": 104,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "y = df.values\n",
+    "y[0:5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 105,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[-1.66607847, -0.53822878, -0.96411408,  1.39741398, -0.19338544,\n",
+       "        -1.04907792, -0.55552393, -0.32587527,  2.92891517, -0.25354028,\n",
+       "        -1.21661774, -0.64531434],\n",
+       "       [-0.09633022, -0.8641094 , -1.44393158,  0.52599094, -0.25061056,\n",
+       "        -1.04907792, -0.55552393, -0.32587527,  2.92891517, -0.25354028,\n",
+       "        -1.21661774, -0.64531434],\n",
+       "       [-0.44516316, -1.36379301,  0.73881384, -1.21685513, -0.53673618,\n",
+       "        -1.04907792, -0.55552393, -0.32587527, -0.34142334, -0.25354028,\n",
+       "        -1.21661774, -0.64531434],\n",
+       "       [-0.96841258,  0.56976533,  0.45224308, -1.21685513,  0.43609092,\n",
+       "         0.14170292, -0.55552393, -0.32587527, -0.34142334, -0.25354028,\n",
+       "        -1.21661774, -0.64531434],\n",
+       "       [-1.05562082, -0.62513027, -0.85900671,  1.39741398, -0.53673618,\n",
+       "         0.14170292, -0.55552393, -0.32587527, -0.34142334, -0.25354028,\n",
+       "        -1.21661774,  1.54963239]])"
+      ]
+     },
+     "execution_count": 105,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X = preprocessing.StandardScaler().fit(X).transform(X.astype(float))\n",
+    "X[0:5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 106,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Train set: (4000, 12) (4000, 14)\n",
+      "Test set: (1000, 12) (1000, 14)\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn.model_selection import train_test_split\n",
+    "X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.2, random_state=4)\n",
+    "print ('Train set:', X_train.shape,  y_train.shape)\n",
+    "print ('Test set:', X_test.shape,  y_test.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 110,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# from sklearn.neighbors import KNeighborsClassifier\n",
+    "# k = 5\n",
+    "from sklearn import preprocessing\n",
+    "from sklearn import utils\n",
+    "# lab_enc = preprocessing.LabelEncoder()\n",
+    "# y_train = lab_enc.fit_transform(y_train)\n",
+    "# print(y_train)\n",
+    "# print(utils.multiclass.type_of_target(y_train))\n",
+    "# print(utils.multiclass.type_of_target(y_train.astype('int')))\n",
+    "# print(utils.multiclass.type_of_target(y_train))\n",
+    "# neigh = KNeighborsClassifier(n_neighbors = k).fit(X_train,y_train)\n",
+    "# neigh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 112,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X_train, X_test, y_train, y_test = train_test_split(\n",
+    "                      X, y, test_size=0.6, random_state=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 116,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# k = 5\n",
+    "# neigh = KNeighborsClassifier(n_neighbors = k).fit(X_train,y_train)\n",
+    "# yhat = neigh.predict(X_test)\n",
+    "# yhat[0:5]\n",
+    "\n",
+    "# For some reason, I keep running into 'continuous-multioutput' an error\n",
+    "# Tried looking at: https://github.com/scikit-learn/scikit-learn/issues/7801"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 119,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import itertools\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "from matplotlib.ticker import NullFormatter\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import matplotlib.ticker as ticker\n",
+    "from sklearn import preprocessing\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 120,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[-1.66607847, -0.53822878, -0.96411408,  1.39741398, -0.19338544,\n",
+       "        -1.04907792, -0.55552393, -0.32587527,  2.92891517, -0.25354028,\n",
+       "        -1.21661774, -0.64531434],\n",
+       "       [-0.09633022, -0.8641094 , -1.44393158,  0.52599094, -0.25061056,\n",
+       "        -1.04907792, -0.55552393, -0.32587527,  2.92891517, -0.25354028,\n",
+       "        -1.21661774, -0.64531434],\n",
+       "       [-0.44516316, -1.36379301,  0.73881384, -1.21685513, -0.53673618,\n",
+       "        -1.04907792, -0.55552393, -0.32587527, -0.34142334, -0.25354028,\n",
+       "        -1.21661774, -0.64531434],\n",
+       "       [-0.96841258,  0.56976533,  0.45224308, -1.21685513,  0.43609092,\n",
+       "         0.14170292, -0.55552393, -0.32587527, -0.34142334, -0.25354028,\n",
+       "        -1.21661774, -0.64531434],\n",
+       "       [-1.05562082, -0.62513027, -0.85900671,  1.39741398, -0.53673618,\n",
+       "         0.14170292, -0.55552393, -0.32587527, -0.34142334, -0.25354028,\n",
+       "        -1.21661774,  1.54963239]])"
+      ]
+     },
+     "execution_count": 120,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "X = preprocessing.StandardScaler().fit(X).transform(X.astype(float))\n",
+    "X[0:5]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 121,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Train set: (4000, 12) (4000, 14)\n",
+      "Test set: (1000, 12) (1000, 14)\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn.model_selection import train_test_split\n",
+    "X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.2, random_state=4)\n",
+    "print ('Train set:', X_train.shape,  y_train.shape)\n",
+    "print ('Test set:', X_test.shape,  y_test.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 122,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.neighbors import KNeighborsClassifier"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 126,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "# Tried following https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/9336fa5d-ddb2-4c18-b57e-0481a3d20e2d/view?access_token=f15d66bb892f52891c7e4c5dd4dd45f0f697d9ffc0e65bb4bb7d9199ebad4592   "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 127,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Still all the same errors regarding continuous or continuous-multiplot\n",
+    "# Looking for a fix"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 131,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import warnings"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 141,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1059  156  131 ...    2   14    2]\n",
+      "multiclass\n",
+      "multiclass\n",
+      "multiclass\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/home/gamer456148/miniconda3/lib/python3.7/site-packages/sklearn/utils/validation.py:72: DataConversionWarning: A column-vector y was passed when a 1d array was expected. Please change the shape of y to (n_samples, ), for example using ravel().\n",
+      "  return f(**kwargs)\n"
+     ]
+    },
+    {
+     "ename": "ValueError",
+     "evalue": "Found input variables with inconsistent numbers of samples: [24000, 28000]",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mValueError\u001b[0m                                Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-141-35a5f0572dce>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m     13\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mutils\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmulticlass\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtype_of_target\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0my_train\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mastype\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'int'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     14\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mutils\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmulticlass\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtype_of_target\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0my_train\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 15\u001b[0;31m \u001b[0mneigh\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mKNeighborsClassifier\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mn_neighbors\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mk\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfit\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mX_train\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0my_train\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     16\u001b[0m \u001b[0mneigh\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/miniconda3/lib/python3.7/site-packages/sklearn/neighbors/_base.py\u001b[0m in \u001b[0;36mfit\u001b[0;34m(self, X, y)\u001b[0m\n\u001b[1;32m   1130\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0misinstance\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mX\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0mKDTree\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mBallTree\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1131\u001b[0m             X, y = self._validate_data(X, y, accept_sparse=\"csr\",\n\u001b[0;32m-> 1132\u001b[0;31m                                        multi_output=True)\n\u001b[0m\u001b[1;32m   1133\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1134\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mndim\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0;36m1\u001b[0m \u001b[0;32mor\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mndim\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0;36m2\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mshape\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/miniconda3/lib/python3.7/site-packages/sklearn/base.py\u001b[0m in \u001b[0;36m_validate_data\u001b[0;34m(self, X, y, reset, validate_separately, **check_params)\u001b[0m\n\u001b[1;32m    430\u001b[0m                 \u001b[0my\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mcheck_array\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0my\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mcheck_y_params\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    431\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 432\u001b[0;31m                 \u001b[0mX\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mcheck_X_y\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mX\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mcheck_params\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    433\u001b[0m             \u001b[0mout\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mX\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    434\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/miniconda3/lib/python3.7/site-packages/sklearn/utils/validation.py\u001b[0m in \u001b[0;36minner_f\u001b[0;34m(*args, **kwargs)\u001b[0m\n\u001b[1;32m     70\u001b[0m                           FutureWarning)\n\u001b[1;32m     71\u001b[0m         \u001b[0mkwargs\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mupdate\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m{\u001b[0m\u001b[0mk\u001b[0m\u001b[0;34m:\u001b[0m \u001b[0marg\u001b[0m \u001b[0;32mfor\u001b[0m \u001b[0mk\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0marg\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mzip\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0msig\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mparameters\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0margs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 72\u001b[0;31m         \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     73\u001b[0m     \u001b[0;32mreturn\u001b[0m \u001b[0minner_f\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     74\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/miniconda3/lib/python3.7/site-packages/sklearn/utils/validation.py\u001b[0m in \u001b[0;36mcheck_X_y\u001b[0;34m(X, y, accept_sparse, accept_large_sparse, dtype, order, copy, force_all_finite, ensure_2d, allow_nd, multi_output, ensure_min_samples, ensure_min_features, y_numeric, estimator)\u001b[0m\n\u001b[1;32m    810\u001b[0m         \u001b[0my\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mastype\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfloat64\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    811\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 812\u001b[0;31m     \u001b[0mcheck_consistent_length\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mX\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    813\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    814\u001b[0m     \u001b[0;32mreturn\u001b[0m \u001b[0mX\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/miniconda3/lib/python3.7/site-packages/sklearn/utils/validation.py\u001b[0m in \u001b[0;36mcheck_consistent_length\u001b[0;34m(*arrays)\u001b[0m\n\u001b[1;32m    254\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0mlen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0muniques\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m>\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    255\u001b[0m         raise ValueError(\"Found input variables with inconsistent numbers of\"\n\u001b[0;32m--> 256\u001b[0;31m                          \" samples: %r\" % [int(l) for l in lengths])\n\u001b[0m\u001b[1;32m    257\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    258\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mValueError\u001b[0m: Found input variables with inconsistent numbers of samples: [24000, 28000]"
+     ]
+    }
+   ],
+   "source": [
+    "X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.6, random_state=1)\n",
+    "X_train = X_train.reshape(-1, 1)\n",
+    "y_train = y_train.reshape(-1, 1)\n",
+    "X_test = X_test.reshape(-1, 1)\n",
+    "from sklearn.neighbors import KNeighborsClassifier\n",
+    "k = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19\n",
+    "from sklearn import preprocessing\n",
+    "from sklearn import utils\n",
+    "lab_enc = preprocessing.LabelEncoder()\n",
+    "y_train = lab_enc.fit_transform(y_train)\n",
+    "print(y_train)\n",
+    "print(utils.multiclass.type_of_target(y_train))\n",
+    "print(utils.multiclass.type_of_target(y_train.astype('int')))\n",
+    "print(utils.multiclass.type_of_target(y_train))\n",
+    "neigh = KNeighborsClassifier(n_neighbors = k).fit(X_train,y_train)\n",
+    "neigh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 143,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Tried https://stackoverflow.com/questions/46638641/how-to-fix-valueerror-expected-2d-array-got-1d-array-instead-in-sklearn-pyth\n",
+    "##  Still ran into an error"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 146,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Requirement already satisfied: pandas in ./miniconda3/lib/python3.7/site-packages (1.0.3)\n",
+      "Collecting mlxtend\n",
+      "\u001b[?25l  Downloading https://files.pythonhosted.org/packages/86/30/781c0b962a70848db83339567ecab656638c62f05adb064cb33c0ae49244/mlxtend-0.18.0-py2.py3-none-any.whl (1.3MB)\n",
+      "\u001b[K     |████████████████████████████████| 1.4MB 1.8MB/s eta 0:00:01\n",
+      "\u001b[?25hRequirement already satisfied: numpy>=1.13.3 in ./miniconda3/lib/python3.7/site-packages (from pandas) (1.18.1)\n",
+      "Requirement already satisfied: pytz>=2017.2 in ./miniconda3/lib/python3.7/site-packages (from pandas) (2019.3)\n",
+      "Requirement already satisfied: python-dateutil>=2.6.1 in ./miniconda3/lib/python3.7/site-packages (from pandas) (2.8.1)\n",
+      "Requirement already satisfied: setuptools in ./.local/lib/python3.7/site-packages (from mlxtend) (45.0.0)\n",
+      "Requirement already satisfied: scikit-learn>=0.20.3 in ./miniconda3/lib/python3.7/site-packages (from mlxtend) (0.23.2)\n",
+      "Requirement already satisfied: matplotlib>=3.0.0 in ./miniconda3/lib/python3.7/site-packages (from mlxtend) (3.3.3)\n",
+      "Requirement already satisfied: scipy>=1.2.1 in ./miniconda3/lib/python3.7/site-packages (from mlxtend) (1.4.1)\n",
+      "Requirement already satisfied: joblib>=0.13.2 in ./miniconda3/lib/python3.7/site-packages (from mlxtend) (0.14.1)\n",
+      "Requirement already satisfied: six>=1.5 in ./miniconda3/lib/python3.7/site-packages (from python-dateutil>=2.6.1->pandas) (1.12.0)\n",
+      "Requirement already satisfied: threadpoolctl>=2.0.0 in ./miniconda3/lib/python3.7/site-packages (from scikit-learn>=0.20.3->mlxtend) (2.1.0)\n",
+      "Requirement already satisfied: pillow>=6.2.0 in ./miniconda3/lib/python3.7/site-packages (from matplotlib>=3.0.0->mlxtend) (8.0.1)\n",
+      "Requirement already satisfied: pyparsing!=2.0.4,!=2.1.2,!=2.1.6,>=2.0.3 in ./miniconda3/lib/python3.7/site-packages (from matplotlib>=3.0.0->mlxtend) (2.4.7)\n",
+      "Requirement already satisfied: cycler>=0.10 in ./miniconda3/lib/python3.7/site-packages (from matplotlib>=3.0.0->mlxtend) (0.10.0)\n",
+      "Requirement already satisfied: kiwisolver>=1.0.1 in ./miniconda3/lib/python3.7/site-packages (from matplotlib>=3.0.0->mlxtend) (1.3.1)\n",
+      "Installing collected packages: mlxtend\n",
+      "Successfully installed mlxtend-0.18.0\n",
+      "Note: you may need to restart the kernel to use updated packages.\n"
+     ]
+    }
+   ],
+   "source": [
+    "pip install pandas mlxtend"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 147,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "\n",
+    "from mlxtend.frequent_patterns import apriori\n",
+    "from mlxtend.frequent_patterns import association_rules"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 148,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Market basket analysis source: https://pythondata.com/market-basket-analysis-with-python-and-pandas/"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 151,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "basket = (df[df['Age'] ==\"Age\"]\n",
+    "          .groupby(['ZIP Code', 'ZIP Code'])['Family']\n",
+    "          .sum().unstack().reset_index().fillna(0)\n",
+    "          .set_index('ZIP Code'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 156,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "# Will try a different groupby strategy"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 159,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Collecting apyori\n",
+      "  Downloading https://files.pythonhosted.org/packages/5e/62/5ffde5c473ea4b033490617ec5caa80d59804875ad3c3c57c0976533a21a/apyori-1.1.2.tar.gz\n",
+      "Building wheels for collected packages: apyori\n",
+      "  Building wheel for apyori (setup.py) ... \u001b[?25ldone\n",
+      "\u001b[?25h  Created wheel for apyori: filename=apyori-1.1.2-cp37-none-any.whl size=5975 sha256=cb7324d4dde2c6715b229c4bbda8834b3c4145488d9ff94f8ffc5096f6cb3c61\n",
+      "  Stored in directory: /home/gamer456148/.cache/pip/wheels/5d/92/bb/474bbadbc8c0062b9eb168f69982a0443263f8ab1711a8cad0\n",
+      "Successfully built apyori\n",
+      "Installing collected packages: apyori\n",
+      "Successfully installed apyori-1.1.2\n",
+      "Note: you may need to restart the kernel to use updated packages.\n"
+     ]
+    }
+   ],
+   "source": [
+    "pip install apyori"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 160,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from apyori import apriori"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 168,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "        ID  Age  Experience  Income  ZIP Code  Family  CCAvg  Education  \\\n",
+      "0        1   25           1      49     91107       4    1.6          1   \n",
+      "1        2   45          19      34     90089       3    1.5          1   \n",
+      "2        3   39          15      11     94720       1    1.0          1   \n",
+      "3        4   35           9     100     94112       1    2.7          2   \n",
+      "4        5   35           8      45     91330       4    1.0          2   \n",
+      "...    ...  ...         ...     ...       ...     ...    ...        ...   \n",
+      "4995  4996   29           3      40     92697       1    1.9          3   \n",
+      "4996  4997   30           4      15     92037       4    0.4          1   \n",
+      "4997  4998   63          39      24     93023       2    0.3          3   \n",
+      "4998  4999   65          40      49     90034       3    0.5          2   \n",
+      "4999  5000   28           4      83     92612       3    0.8          1   \n",
+      "\n",
+      "      Mortgage  Personal Loan  Securities Account  CD Account  Online  \\\n",
+      "0            0              0                   1           0       0   \n",
+      "1            0              0                   1           0       0   \n",
+      "2            0              0                   0           0       0   \n",
+      "3            0              0                   0           0       0   \n",
+      "4            0              0                   0           0       0   \n",
+      "...        ...            ...                 ...         ...     ...   \n",
+      "4995         0              0                   0           0       1   \n",
+      "4996        85              0                   0           0       1   \n",
+      "4997         0              0                   0           0       0   \n",
+      "4998         0              0                   0           0       1   \n",
+      "4999         0              0                   0           0       1   \n",
+      "\n",
+      "      CreditCard  \n",
+      "0              0  \n",
+      "1              0  \n",
+      "2              0  \n",
+      "3              0  \n",
+      "4              1  \n",
+      "...          ...  \n",
+      "4995           0  \n",
+      "4996           0  \n",
+      "4997           0  \n",
+      "4998           0  \n",
+      "4999           1  \n",
+      "\n",
+      "[5000 rows x 14 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 169,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "      Age  Experience  Income  Family  CCAvg  Education  Mortgage  \\\n",
+      "0      25           1      49       4    1.6          1         0   \n",
+      "1      45          19      34       3    1.5          1         0   \n",
+      "2      39          15      11       1    1.0          1         0   \n",
+      "3      35           9     100       1    2.7          2         0   \n",
+      "4      35           8      45       4    1.0          2         0   \n",
+      "...   ...         ...     ...     ...    ...        ...       ...   \n",
+      "4995   29           3      40       1    1.9          3         0   \n",
+      "4996   30           4      15       4    0.4          1        85   \n",
+      "4997   63          39      24       2    0.3          3         0   \n",
+      "4998   65          40      49       3    0.5          2         0   \n",
+      "4999   28           4      83       3    0.8          1         0   \n",
+      "\n",
+      "      Personal Loan  Securities Account  CD Account  Online  CreditCard  \n",
+      "0                 0                   1           0       0           0  \n",
+      "1                 0                   1           0       0           0  \n",
+      "2                 0                   0           0       0           0  \n",
+      "3                 0                   0           0       0           0  \n",
+      "4                 0                   0           0       0           1  \n",
+      "...             ...                 ...         ...     ...         ...  \n",
+      "4995              0                   0           0       1           0  \n",
+      "4996              0                   0           0       1           0  \n",
+      "4997              0                   0           0       0           0  \n",
+      "4998              0                   0           0       1           0  \n",
+      "4999              0                   0           0       1           1  \n",
+      "\n",
+      "[5000 rows x 12 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(dataset)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 176,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "## Failed attempt at collaborative filtering\n",
+    "# https://github.com/harshays/classify/blob/master/classification.ipynb\n",
+    "## Kept running into a syntax error\n",
+    "# Customer Example = {\"Age\": 40, \"Experience\" : 10, \"Income\" : 84, \"Family\": 2, \"CCAvg\": 2, \"Education\": 2, \"Mortgage\": 0, \"Securities Account\": 0, \"CD Account\": 0, \"Online\": 1, \"CreditCard\": 1}}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 183,
+   "metadata": {
+    "scrolled": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1059  156  131 ...    2   14    2]\n",
+      "multiclass\n",
+      "multiclass\n",
+      "multiclass\n"
+     ]
+    }
+   ],
+   "source": [
+    "X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.6, random_state=1)\n",
+    "X_train = X_train.reshape(-1, 1)\n",
+    "y_train = y_train.reshape(-1, 1)\n",
+    "X_test = X_test.reshape(-1, 1)\n",
+    "from sklearn.neighbors import KNeighborsClassifier\n",
+    "k = 1\n",
+    "from sklearn import preprocessing\n",
+    "from sklearn import utils\n",
+    "lab_enc = preprocessing.LabelEncoder()\n",
+    "y_train = lab_enc.fit_transform(y_train)\n",
+    "print(y_train)\n",
+    "print(utils.multiclass.type_of_target(y_train))\n",
+    "print(utils.multiclass.type_of_target(y_train.astype('int')))\n",
+    "print(utils.multiclass.type_of_target(y_train))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 186,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1059  156  131 ...    2   14    2]\n",
+      "multiclass\n",
+      "multiclass\n",
+      "multiclass\n"
+     ]
+    }
+   ],
+   "source": [
+    "X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.6, random_state=1)\n",
+    "X_train = X_train.reshape(-1, 1)\n",
+    "y_train = y_train.reshape(-1, 1)\n",
+    "X_test = X_test.reshape(-1, 1)\n",
+    "from sklearn.neighbors import KNeighborsClassifier\n",
+    "k = 2\n",
+    "from sklearn import preprocessing\n",
+    "from sklearn import utils\n",
+    "lab_enc = preprocessing.LabelEncoder()\n",
+    "y_train = lab_enc.fit_transform(y_train)\n",
+    "print(y_train)\n",
+    "print(utils.multiclass.type_of_target(y_train))\n",
+    "print(utils.multiclass.type_of_target(y_train.astype('int')))\n",
+    "print(utils.multiclass.type_of_target(y_train))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 187,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1059  156  131 ...    2   14    2]\n",
+      "multiclass\n",
+      "multiclass\n",
+      "multiclass\n"
+     ]
+    }
+   ],
+   "source": [
+    "X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.6, random_state=1)\n",
+    "X_train = X_train.reshape(-1, 1)\n",
+    "y_train = y_train.reshape(-1, 1)\n",
+    "X_test = X_test.reshape(-1, 1)\n",
+    "from sklearn.neighbors import KNeighborsClassifier\n",
+    "k = 3\n",
+    "from sklearn import preprocessing\n",
+    "from sklearn import utils\n",
+    "lab_enc = preprocessing.LabelEncoder()\n",
+    "y_train = lab_enc.fit_transform(y_train)\n",
+    "print(y_train)\n",
+    "print(utils.multiclass.type_of_target(y_train))\n",
+    "print(utils.multiclass.type_of_target(y_train.astype('int')))\n",
+    "print(utils.multiclass.type_of_target(y_train))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 188,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1059  156  131 ...    2   14    2]\n",
+      "multiclass\n",
+      "multiclass\n",
+      "multiclass\n"
+     ]
+    }
+   ],
+   "source": [
+    "X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=0.6, random_state=1)\n",
+    "X_train = X_train.reshape(-1, 1)\n",
+    "y_train = y_train.reshape(-1, 1)\n",
+    "X_test = X_test.reshape(-1, 1)\n",
+    "from sklearn.neighbors import KNeighborsClassifier\n",
+    "k = 7\n",
+    "from sklearn import preprocessing\n",
+    "from sklearn import utils\n",
+    "lab_enc = preprocessing.LabelEncoder()\n",
+    "y_train = lab_enc.fit_transform(y_train)\n",
+    "print(y_train)\n",
+    "print(utils.multiclass.type_of_target(y_train))\n",
+    "print(utils.multiclass.type_of_target(y_train.astype('int')))\n",
+    "print(utils.multiclass.type_of_target(y_train))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 189,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# I think the main error before being able to finish the classifier model is\n",
+    "# neigh = KNeighborsClassifier(n_neighbors = k).fit(X_train,y_train)\n",
+    "# neigh\n",
+    "## Right now, unsure what is wrong with the syntax"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 205,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(\"print('Since K-means relies on distance, it is sentisitve specifially to mostly outliers')\\n\",)"
+      ]
+     },
+     "execution_count": 205,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Regarding classification or the best k, I am not sure because every program I run has a contiunous delivery error.\n",
+    "## This error is apparently likely in my version in Python as I have installed all the dependencies\n",
+    "\"print('Since K-means relies on distance, it is sentisitve specifially to mostly outliers')\\n\",\n",
+    "# For example, high amount of outliers were present in income and larges distances were available regarding age"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 204,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "\"print('Unsure why the classification column would not work regarding syntax. Syntax was correct`)\\n\""
+      ]
+     },
+     "execution_count": 204,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\"print('Unsure why the classification column would not work regarding syntax. Syntax was correct`)\\n\""
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
