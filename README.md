@@ -126,3 +126,7 @@ plt.show()
 ```
 df = df.drop(columns=['SAMPLE1', 'SAMPLE2'])
 ```
+**Print Head:**
+```
+print (df.head())
+```
