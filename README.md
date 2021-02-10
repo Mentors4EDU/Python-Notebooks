@@ -123,10 +123,10 @@ plt.title('TitleExample')
 plt.show()
 ```
 **Data Frame (Drop):**
-```
+```python
 df = df.drop(columns=['SAMPLE1', 'SAMPLE2'])
 ```
 **Print Head:**
-```
+```python
 print (df.head())
 ```
