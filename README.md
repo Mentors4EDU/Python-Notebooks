@@ -130,3 +130,9 @@ df = df.drop(columns=['SAMPLE1', 'SAMPLE2'])
 ```python
 print (df.head())
 ```
+**intColumns:**
+```python
+intColumns = [c for c in df.columns if df[c].dtype == 'int']
+intColumns.remove('SAMPLE`)
+df[intColumns] = df[intColumns].astype('float64')
+```
