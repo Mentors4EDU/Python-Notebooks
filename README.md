@@ -123,4 +123,6 @@ plt.title('TitleExample')
 plt.show()
 ```
 **Data Frame (Drop):**
-``df = df.drop(columns=['SAMPLE1', 'SAMPLE2'])``
+```
+df = df.drop(columns=['SAMPLE1', 'SAMPLE2'])
+```
