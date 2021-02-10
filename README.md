@@ -122,3 +122,5 @@ plt.ylabel('Label2')
 plt.title('TitleExample')
 plt.show()
 ```
+**Data Frame (Drop):**
+``df = df.drop(columns=['SAMPLE1', 'SAMPLE2'])``
