@@ -141,3 +141,12 @@ df[intColumns] = df[intColumns].astype('float64')
 from dmba import classificationSummary
 train_df, valid_df = train_test_split(df, test_size=0.4, random_state=1)
 ```
+**Pivot Tables:**
+```python
+pd.pivot_table(df, 
+               values='ValueExample',
+               index=['IndexName'],
+               columns=['Column'],
+               aggfunc='count'
+              )
+```
