@@ -150,3 +150,7 @@ pd.pivot_table(df,
                aggfunc='count'
               )
 ```
+**Random State:**
+```python
+rng = np.random.RandomState(1)
+```
