@@ -136,3 +136,8 @@ intColumns = [c for c in df.columns if df[c].dtype == 'int']
 intColumns.remove('SAMPLE`)
 df[intColumns] = df[intColumns].astype('float64')
 ```
+**dmba import:**
+```python
+from dmba import classificationSummary
+train_df, valid_df = train_test_split(df, test_size=0.4, random_state=1)
+```
