@@ -154,3 +154,15 @@ pd.pivot_table(df,
 ```python
 rng = np.random.RandomState(1)
 ```
+**Import Warnings:**
+```python
+import warnings
+warnings.filterwarnings('ignore')
+```
+**Series/Dummies:**
+```python
+s = pd.Series(list(df))
+pd.get_dummies(s)
+pd.get_dummies(df, dummy_na=True)
+df = pd.DataFrame({'Cat': ['1', '1', '2'], 'OtherCat': ['1', '2', '3']})
+```
