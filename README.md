@@ -166,3 +166,11 @@ pd.get_dummies(s)
 pd.get_dummies(df, dummy_na=True)
 df = pd.DataFrame({'Cat': ['1', '1', '2'], 'OtherCat': ['1', '2', '3']})
 ```
+**Array:**
+```python
+y = np.array([1, 2, 3, 4, 5, 6, 7])
+```
+**Print Predict:**
+```python
+print(clf.predict(X[2:3]))
+```
