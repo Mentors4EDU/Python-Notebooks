@@ -182,3 +182,7 @@ print(clf.predict(X[2:3]))
 train_df, valid_df = train_test_split(df, test_size=0.4, random_state=1)
 print('Training set:', train_df.shape, 'Validation set:', valid_df.shape)
 ```
+**Describe:**
+```python
+df.describe()
+```
