@@ -177,3 +177,8 @@ y = np.array([1, 2, 3, 4, 5, 6, 7])
 ```python
 print(clf.predict(X[2:3]))
 ```
+**train_df.shape:**
+```python
+train_df, valid_df = train_test_split(df, test_size=0.4, random_state=1)
+print('Training set:', train_df.shape, 'Validation set:', valid_df.shape)
+```
