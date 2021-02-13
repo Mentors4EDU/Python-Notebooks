@@ -186,3 +186,12 @@ print('Training set:', train_df.shape, 'Validation set:', valid_df.shape)
 ```python
 df.describe()
 ```
+**Heatmap:**
+```python
+corr = df.corr()
+fig, ax = plt.subplots(figsize=(8, 8))
+sns.heatmap(corr, cmap='magma', annot=True, fmt=".2f")
+plt.xticks(range(len(corr.columns)), corr.columns);
+plt.yticks(range(len(corr.columns)), corr.columns)
+plt.show()
+```
