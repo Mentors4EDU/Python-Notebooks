@@ -195,3 +195,20 @@ plt.xticks(range(len(corr.columns)), corr.columns);
 plt.yticks(range(len(corr.columns)), corr.columns)
 plt.show()
 ```
+**Create a Plot:**
+```python
+type_list= Counter(df['name_Type'])
+labels = type_list.keys()
+sizes = type_list.values()
+f, axes = plt.subplots(1,2,figsize=(14,4))
+sns.countplot(df['name_Type'], ax = axes[0], palette="Set1")
+axes[0].set_xlabel('name Type', fontsize=14)
+axes[0].set_ylabel('Count', fontsize=14)
+axes[0].yaxis.tick_left()
+sns.violinplot(x = 'name_Type', y = 'LABELNAME', data = df, ax = axes[1])
+axes[1].set_xlabel('name Type', fontsize=14)
+axes[1].set_ylabel('LABELNAME', fontsize=14)
+axes[1].yaxis.set_label_position("right")
+axes[1].yaxis.tick_right()
+plt.show()
+```
